@@ -28,7 +28,19 @@ public class DebtCsvRepositoryImpl extends CsvRepository<DebtEntity> implements 
                 .toList();
     }
 
+    @Override
+    public List<DebtEntity> findByPaymentStatus(boolean isPaidOff) {
+        return this.findAll().stream()
+                .filter(debtEntity -> debtEntity.isPaidOff() == isPaidOff)
+                .toList();
+    }
 
+    @Override
+    public List<DebtEntity> findDebtsGreaterThan(double amount) {
+        return this.findAll().stream()
+                .filter(debtEntity -> debtEntity.getAmount() > amount)
+                .toList();
+    }
 
 
 }

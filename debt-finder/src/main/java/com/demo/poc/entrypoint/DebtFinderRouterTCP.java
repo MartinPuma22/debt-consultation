@@ -1,9 +1,7 @@
 package com.demo.poc.entrypoint;
 
 
-import com.demo.poc.entrypoint.debts.dto.DebtByCurrency;
-import com.demo.poc.entrypoint.debts.dto.DebtByDocumentDto;
-import com.demo.poc.entrypoint.debts.dto.DebtDto;
+import com.demo.poc.entrypoint.debts.dto.*;
 import com.demo.poc.entrypoint.debts.service.DebtFinderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -64,7 +62,22 @@ public class DebtFinderRouterTCP extends Thread {
                 List<DebtByCurrency> response = debtFinderService.findByCurrency(currency);
                 String jsonResponse = objectMapper.writeValueAsString(response);
                 outputWriter.println(jsonResponse);
-            }   success = true;
+                success = true;
+            }
+            if (endpoint.matches("^api/v1/debt-finder/debts/status/(true|false)")) {
+                String status = endpoint.split("/")[5].trim();
+                List<DebtsByStatusDto> response = debtFinderService.findByPaymentStatus(Boolean.parseBoolean(status));
+                String jsonResponse = objectMapper.writeValueAsString(response);
+                outputWriter.println(jsonResponse);
+                success = true;
+            }
+            if (endpoint.matches("^api/v1/debt-finder/debts/amount/greater-than/\\d+(\\.\\d+)?$")) {
+                String amount = endpoint.split("/")[6].trim();
+                List<DebtsLeakedDto> response = debtFinderService.findDebtsGreaterThan(Double.parseDouble(amount));
+                String jsonResponse = objectMapper.writeValueAsString(response);
+                outputWriter.println(jsonResponse);
+                success = true;
+            }
 
             if (!success)
                 throw new IllegalArgumentException("The request '" + endpoint + "' was not processed successfully");

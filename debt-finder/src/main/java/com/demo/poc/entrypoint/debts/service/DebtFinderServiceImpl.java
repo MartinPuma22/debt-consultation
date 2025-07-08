@@ -1,15 +1,15 @@
 package com.demo.poc.entrypoint.debts.service;
 
-import com.demo.poc.entrypoint.debts.dto.DebtByCurrency;
-import com.demo.poc.entrypoint.debts.dto.DebtByDocumentDto;
-import com.demo.poc.entrypoint.debts.dto.DebtDto;
+import com.demo.poc.entrypoint.debts.dto.*;
 import com.demo.poc.entrypoint.debts.entity.DebtEntity;
 import com.demo.poc.entrypoint.debts.repository.DebtCsvRepositoryImpl;
 import com.google.inject.Inject;
 
 import java.util.List;
 
-public class DebtFinderServiceImpl implements DebtFinderService{
+public class DebtFinderServiceImpl implements DebtFinderService {
+
+
 
     private final DebtCsvRepositoryImpl repository;
 
@@ -49,4 +49,26 @@ public class DebtFinderServiceImpl implements DebtFinderService{
                         .build()).toList();
     }
 
+    @Override
+    public List<DebtsByStatusDto> findByPaymentStatus(boolean isPaidOff) {
+        List<DebtEntity> entities = repository.findByPaymentStatus(isPaidOff);
+        return entities.stream()
+                .map(debtEntity -> DebtsByStatusDto.builder()
+                        .customerDni(debtEntity.getCustomerDni())
+                        .amount(debtEntity.getAmount())
+                        .build()).toList();
+    }
+
+    @Override
+    public List<DebtsLeakedDto> findDebtsGreaterThan(double amount) {
+        List<DebtEntity> entities = repository.findDebtsGreaterThan(amount);
+        return entities.stream()
+                .map(debtEntity -> DebtsLeakedDto.builder()
+                        .amount(debtEntity.getAmount())
+                        .currency(debtEntity.getCurrency())
+                        .customerDni(debtEntity.getCustomerDni())
+                        .isPaidOff(debtEntity.isPaidOff())
+                        .build())
+                .toList();
+    }
 }

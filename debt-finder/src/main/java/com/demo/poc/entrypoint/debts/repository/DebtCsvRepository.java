@@ -9,4 +9,8 @@ public interface DebtCsvRepository {
     DebtEntity findByDni(String customerDni);
 
     List<DebtEntity> findByCurrency(String currency);
+
+    List<DebtEntity> findByPaymentStatus (boolean isPaidOff );
+
+    List<DebtEntity>findDebtsGreaterThan(double amount);
 }

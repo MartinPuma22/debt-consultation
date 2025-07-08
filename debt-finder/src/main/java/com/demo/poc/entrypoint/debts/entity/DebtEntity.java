@@ -3,7 +3,7 @@ package com.demo.poc.entrypoint.debts.entity;
 import com.demo.poc.commons.repository.Entity;
 import lombok.*;
 
-
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
